@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hamilton Quiz</title>
+    <style>
+        body {
+            font-family: cursive;
+            margin: 20px;
+            color: purple;
+        }
+        h1 {
+            text-align: center;
+        }
+        #hamilton-image {
+            display: none;
+            width: 300px;
+            margin: 20px auto;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        #answer-feedback {
+            text-align: center;
+            font-weight: bold;
+        }
+        #scoreboard {
+            text-align: center;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hamilton Quiz</h1>
+
+    <img id="hamilton-image" src="Angelica.jpg" alt="Angelica Schuyler">
+
+    <div id="scoreboard">Score: <span id="score">0</span></div>
+
+    <div class="question">
+        <h2 id="question-title"></h2>
+        <p id="question-text"></p>
+        <form id="question-form">
+        </form>
+    </div>
+
+    <div id="answer-feedback"></div>
+
+    <button id="submit-button" onclick="checkAnswer()">Submit Answer</button>
+    <button id="next-button" style="display: none;" onclick="nextQuestion()">Next</button>
+
+    <script>
+        var questions = [
+            {
+                question: "Who portrayed Aaron Burr in the original Broadway cast of 'Hamilton'?",
+                options: ["Leslie Odom Jr.", "Lin-Manuel Miranda", "Daveed Diggs", "Anthony Ramos"],
+                answer: "a"
+            },
+            {
+                question: "How many words are in the script Of Hamilton: An American Musical?",
+                options: ["20,520", "30,6850", "48,600", "25,789"],
+                answer: "a"
+            },
+            {
+                question: "In the song Blow Us All Away, Philip Hamilton is seeking to confront a man who publicly defamed his father, Alexander. Who was he??",
+                options: ["Richard Price", "Benjamin Rush", "Nathaniel Lawrence", "George Eacker"],
+                answer: "d"
+            },
+            {
+                question: "What was Eliza' proudest acheivement?",
+                options: ["King George III", "Thomas Jefferson", "John Adams", "George Washington"],
+                answer: "a"
+            },
+            {
+                question: "Which Song In Hamilton features musical salutes to the Beatles?'?",
+                options: ["Take a Break", "You'll be back", "Farmer Refuted", "The Story of Tonight"],
+                answer: "b"
+            },
+            {
+                question: "When was Alexander Hamilton born? ",
+                options: ["July 12, 1804 ", "June 20, 1996 ", "July 11, 1757 ", "Febuary 18, 1757, "],
+                answer: "c"
+            },
+            {
+                question: "What advice does Aaron Burr give Alexander Hamilton?",
+                options: ["Dying is easy, young man, living is harder", "Talk less, simle more", "Wait for it", "Take a break"],
+                answer: "b"
+            },
+            {
+                question: "which of these is not a cut Hamilton song?",
+                options: ["Letter to President Adams", "Dear Theodosia Reprise", "No John Trumbull", "Congratulations"],
+                answer: "b"
+            },
+            {
+                question: "Who introduces Alexander Hamilton to Aaron Burr in the musical?",
+                options: ["Angelica Schuyler", "Eliza Schuyler", "Peggy Schuyler", "Maria Reynolds"],
+                answer: "a"
+            },
+            {
+                question: "How many truths does Angelica sing that she realises?",
+                options: ["Four", "Five", "Three", "Thousand"],
+                answer: "c"
+
+
+            }
+        ];
+
+        function shuffleArray(array) {
+            for (var i = array.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
+            }
+            return array;
+        }
+
+        function getRandomQuestion() {
+            return questions[Math.floor(Math.random() * questions.length)];
+        }
+
+        var currentQuestion = null;
+        var lives = 1;
+        var score = 0;
+
+        function displayQuestion() {
+            currentQuestion = getRandomQuestion();
+            document.getElementById("question-title").textContent = "Question ";
+            document.getElementById("question-text").textContent = currentQuestion.question;
+            var form = document.getElementById("question-form");
+            form.innerHTML = "";
+            currentQuestion.options.forEach(function(option, index) {
+                var radio = document.createElement("input");
+                radio.type = "radio";
+                radio.name = "answer";
+                radio.value = String.fromCharCode(97 + index); // Convert index to character code (a, b, c, d)
+                radio.id = "option" + index;
+                var label = document.createElement("label");
+                label.setAttribute("for", "option" + index);
+                label.textContent = option;
+                form.appendChild(radio);
+                form.appendChild(label);
+                form.appendChild(document.createElement("br"));
+            });
+            document.getElementById("hamilton-image").style.display = "none";
+            document.getElementById("answer-feedback").textContent = "";
+            document.getElementById("next-button").style.display = "none";
+        }
+
+        function checkAnswer() {
+            var selectedOption = document.querySelector('input[name="answer"]:checked');
+            if (!selectedOption) {
+                alert("Please select an answer.");
+                return;
+            }
+            var selectedAnswer = selectedOption.value;
+            var correctAnswer = currentQuestion.answer;
+            if (selectedAnswer === correctAnswer) {
+                document.getElementById("hamilton-image").src = "Angelica.jpg";
+                document.getElementById("hamilton-image").style.display = "block";
+                document.getElementById("answer-feedback").textContent = "WERK";
+                document.getElementById("submit-button").style.display = "none";
+                document.getElementById("next-button").style.display = "block";
+                score++;
+                document.getElementById("score").textContent = score;
+            } else {
+                document.getElementById("answer-feedback").textContent = "Game over! You've run out of lives.";
+                document.getElementById("hamilton-image").src = "KingGeorge.jpg";
+                document.getElementById("hamilton-image").style.display = "block";
+                document.getElementById("answer-feedback").textContent = "You'll be back";
+                document.getElementById("submit-button").style.display = "none";
+                document.getElementById("next-button").style.display = "none";
+            }
+        }
+
+        function nextQuestion() {
+            document.getElementById("hamilton-image").style.display = "none";
+            document.getElementById("submit-button").style.display = "block";
+            displayQuestion();
+        }
+
+        displayQuestion();
+    </script>
+</body>
+</html>
